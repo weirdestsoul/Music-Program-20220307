@@ -19,20 +19,51 @@ void setup() {
 }//End setup
 //
 void draw() {
-
+  if (song1.isLooping()) println("There are", song1.loopCount(), "loops left");
+  if (song1.isPlaying() && !song1.isLooping()) println("Play Once");
+  println("Time elapsed", song1.position()/1000, "Song Length", song1.length()/1000 ); //value in milliseconds
 }//End draw
 //
-void keyPressed() {
-  //Only press a number f0r this code below
+void keyPressed() {  
+  //Only press a number for this code below
+  if (key=='1' || key=='2' || key=='3' || key=='4' || key=='5' || key=='6' || key=='7' || key=='8' || key=='9') {//looping functions
   String keystr = String.valueOf(key);
+  println("Looping", keystr, "times");
   println("Number of Repeats is", keystr);
   int num = int(keystr);
   song1.loop(num);
+  }
+  //
+  //Alternate Play button
+  if ( key=='p' || key=='P' ){ 
+    if(song1.isPlaying()){
+      song1.pause();
+    }else {
+ song1.play();
+    };//Parameter is in milliseconds from start of audio file to start of playing
+    }
+  //End play-pause button
+  //
   /* Previous Play button and Loop button
   int loopNum = 2;//local variable plays once and loops twice
-  if ( key=='p' || key=='P')song1.play();//Parameter is in milliseconds from start of audio file to start of playing
   if ( key=='l' || key=='L') song1.loop(loopNum); //parameter is number of repeats
 */
+  if (key=='m' ||key=='M') {
+  if(song1.isMuted() ) {
+    song1.unmute();
+  } else {
+    song1.mute();
+  }
+}//End mute
+//
+  if(key=='s' || key=='S'){
+    if (song1.isPlaying()) {//Stop Button
+      song1.pause();
+      song1.rewind();
+    }else{
+      song1.rewind();
+    }
+  }//End stop button
 }//End keyPressed
 //
 void mousePressed() {
