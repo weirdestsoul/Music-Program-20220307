@@ -34,15 +34,26 @@ void keyPressed() {
   song1.loop(num);
   }
   //
+  //
+    if (key=='l' || key=='L' ) song1.loop();
   //Alternate Play button
   if ( key=='p' || key=='P' ){ 
     if(song1.isPlaying()){
       song1.pause();
+    } else if (song1.position()>=song1.length()-song1.length()*1/10){ //Special situation: at the end of the song (built-in stop button
+    //End of Song Calculation: hardcode 1000 or use formula
+    //Alternate formula:song1.length-song1,position <= 3500
+    song1.rewind();
+    song1.play();
     }else {
- song1.play();
+      song1.play();
     };//Parameter is in milliseconds from start of audio file to start of playing
     }
   //End play-pause button
+  //
+  //Forward and reverse button
+  if (key=='f' || key=='F') song1.skip(3000); //Skip forward 3 second
+  if (key=='r' || key=='R') song1.skip(-3000); //Skip backward, or reverse forward 3 second
   //
   /* Previous Play button and Loop button
   int loopNum = 2;//local variable plays once and loops twice
