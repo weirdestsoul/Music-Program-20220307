@@ -9,19 +9,26 @@ import ddf.minim.ugens.*;
 //Global Variables
 Minim minim; //Creattes object to access all functions
 AudioPlayer song1;//creates "play list" variables holding extensions WAV, AIFF, AU, SND & MP3
+AudioMetaData song1MetaData1; //"song1's meta data"
 //
 void setup() {
   size(900, 900); //Remember display geometry
   minim = new Minim(this);//loads from data directory, loadFile should load from project folder, like loadImage()
   song1 = minim.loadFile("musicFolder/SomebodyThatIUsedToKnow.mp3");//Able to pass absolute path file name, and URL
-
-  
+  song1MetaData1 = song1.getMetaData(); //reads song meta 1, like song1, mimicking array notation
+  //
+  println("Start of Console");
+  println("Click the console to Finish Starting this program");//See previoyus lesson for OS-level Button
+  println("Title:", song1MetaData1.title() );
 }//End setup
 //
 void draw() {
   if (song1.isLooping()) println("There are", song1.loopCount(), "loops left");
   if (song1.isPlaying() && !song1.isLooping()) println("Play Once");
-  println("Time elapsed", song1.position()/1000, "Song Length", song1.length()/1000 ); //value in milliseconds
+  if (song1.isPlaying()) println("Time elapsed", song1.position()/1000, "Song Length", song1.length()/1000 ); //value in milliseconds
+  //
+  background(black);
+  rect(width*1/4, height*0, width*1/2, height*1/10);
 }//End draw
 //
 void keyPressed() {  
