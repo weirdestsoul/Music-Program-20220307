@@ -8,12 +8,14 @@ import ddf.minim.ugens.*;
 //
 //Global Variables
 Minim minim; //Creattes object to access all functions
+Boolean pauseTrue=false, stopTrue = false;
 int numberOfSongs=4;
 AudioPlayer[] song = new AudioPlayer[numberOfSongs];//creates "play list" variables holding extensions WAV, AIFF, AU, SND & MP3
 AudioMetaData[] songMetaData = new AudioMetaData[numberOfSongs]; //"song1's meta data"
 color black=0, purple = #6611D6;
 PFont titleFont;
 int currentSong = numberOfSongs - numberOfSongs;
+
 //
 void setup() {
   size(900, 900); //Remember display geometry
@@ -22,6 +24,7 @@ void setup() {
   song[currentSong+=1] = minim.loadFile("musicFolder/Without Me.mp3");
   song[currentSong+=1] = minim.loadFile("musicFolder/Jetpack Joyride Theme.mp3");
   song[currentSong+=1] = minim.loadFile("musicFolder/[Electro] - Laszlo - Supernova [Monstercat Release].mp3");
+  //
   //
   currentSong-=currentSong; //currentSong = currentsong - currentsong
   for (int i=currentSong; i<song.length; i++) {
@@ -45,12 +48,12 @@ void draw() {
   if (song[currentSong].isPlaying() && !song[currentSong].isLooping()) println("Play Once");
   if (song[currentSong].isPlaying()) println("Time elapsed", song[currentSong].position()/1000, "Song Length", song[currentSong].length()/1000 ); //value in milliseconds
   if (!song[currentSong].isPlaying()) {
-  if(!song[currentSong].isPlaying() && currentSong <=2) {
+  if(!song[currentSong].isPlaying() && currentSong <=2 && pauseTrue == false && stopTrue == false) {
   song[currentSong].pause();
   song[currentSong].rewind();
-  currentSong++;
+  currentSong+=1;
   song[currentSong].play();
-  } else if (currentSong >= 3 && !song[currentSong].isPlaying()) {
+  } else if (currentSong == 3 && !song[currentSong].isPlaying() && pauseTrue==false && stopTrue == false) {
   song[currentSong].pause();
   song[currentSong].rewind();
   currentSong -= currentSong;
@@ -59,11 +62,17 @@ void draw() {
   } 
   //
   background(black);
-  rect(width*1/4, height*0, width*1/2, height*1/10);
+  rect(width*1/4, height*0, width*1/2, height*2/10);
   fill(purple);
   textAlign(CENTER,CENTER);
   textFont(titleFont, 30);
   text(songMetaData[currentSong].title(), width*1/4, height*0, width*1/2, height*1/10);
+  fill(255);
+  //
+  fill(purple);
+  textAlign(CENTER,CENTER);
+  textFont(titleFont, 20);
+  text (song[currentSong].position()/1000 + "/" + song[currentSong].length()/1000, width*1/4, height*0, width*1/2, height*2/10);
   fill(255);
 }//End draw
 //
@@ -83,6 +92,7 @@ void keyPressed() {
   if ( key=='p' || key=='P' ){ 
     if(song[currentSong].isPlaying()){
       song[currentSong].pause();
+      pauseTrue=true;
     } else if (song[currentSong].position()>=song[currentSong].length()-song[currentSong].length()*1/10){ //Special situation: at the end of the song (built-in stop button
     //End of Song Calculation: hardcode 1000 or use formula
     //Alternate formula:song1.length-song1,position <= 3500
@@ -90,13 +100,15 @@ void keyPressed() {
     song[currentSong].play();
     }else {
       song[currentSong].play();
+      pauseTrue=false;
+      stopTrue=false;
     };//Parameter is in milliseconds from start of audio file to start of playing
     }
   //End play-pause button
   //
   //Forward and reverse button
-  if (key=='f' || key=='F') song[currentSong].skip(3000); //Skip forward 3 second
-  if (key=='r' || key=='R') song[currentSong].skip(-3000); //Skip backward, or reverse forward 3 second
+  if (key=='f' || key=='F') song[currentSong].skip(5000); //Skip forward 3 second
+  if (key=='r' || key=='R') song[currentSong].skip(-5000); //Skip backward, or reverse forward 3 second
   //
   /* Previous Play button and Loop button
   int loopNum = 2;//local variable plays once and loops twice
@@ -114,6 +126,7 @@ void keyPressed() {
     if (song[currentSong].isPlaying()) {//Stop Button
       song[currentSong].pause();
       song[currentSong].rewind();
+      stopTrue=true;
     }else{
       song[currentSong].rewind();
     }
@@ -151,12 +164,12 @@ void keyPressed() {
   } else if (currentSong <= 0 && song[currentSong].isPlaying()) {
   song[currentSong].pause();
   song[currentSong].rewind();
-  currentSong = numberOfSongs-1;
+  currentSong+=numberOfSongs-1;
   song[currentSong].play();
   } else if (currentSong <= 0 && !song[currentSong].isPlaying()) {
   song[currentSong].pause();
   song[currentSong].rewind();
-  currentSong=numberOfSongs-1;
+  currentSong+=numberOfSongs-1;
   }
   else {
   song[currentSong].pause();
